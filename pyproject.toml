@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "headless-blender"
+version = "0.0.1"
+description = "Trying to run physics simulations via Blender by not opening it."
+authors = ["Daniel Burger <public@danielburger.online>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "==3.10.*"
+bpy = "^4.0.0"
+fastapi = "^0.104.1"
+fake-bpy-module = "^20231201"
+
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.0.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
