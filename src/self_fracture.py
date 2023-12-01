@@ -1,5 +1,19 @@
 """Example Python headless file"""
+import os
 import bpy
+
+# Create an empty Blender file
+bpy.ops.wm.read_factory_settings(use_empty=True)
+
+# Create a red sphere in the center of the scene
+bpy.ops.mesh.primitive_uv_sphere_add(
+    radius=1, enter_editmode=False, align="WORLD", location=(0, 0, 0)
+)
+
+# Set the sphere's material to red
+material = bpy.data.materials.new(name="RedMaterial")
+material.diffuse_color = (1, 0, 0, 1)  # Red color
+bpy.context.object.data.materials.append(material)
 
 # Ensure the Cell Fracture addon is enabled
 bpy.ops.preferences.addon_enable(module="object_fracture_cell")
@@ -65,3 +79,7 @@ for frame in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end + 
             obj.keyframe_insert(data_path="location")
             obj.keyframe_insert(data_path="rotation_euler")
             obj.keyframe_insert(data_path="scale")
+
+# Save the file
+file_path = os.path.join(os.path.dirname(bpy.data.filepath), "dist/example.blend")
+bpy.ops.wm.save_as_mainfile(filepath=file_path)
