@@ -27,7 +27,10 @@ if not imported_object:
     raise Exception("No imported mesh found")
 
 # Move the object up
-imported_object.location.z += 3.0
+imported_object.location.z += 2.0
+
+# Apply the scale
+bpy.ops.object.transform_apply(scale=True)
 
 # Ensure the Cell Fracture addon is enabled
 bpy.ops.preferences.addon_enable(module="object_fracture_cell")
@@ -56,14 +59,33 @@ for obj in bpy.data.objects:
     bpy.data.objects[original_obj_name].select_set(True)
     bpy.ops.object.delete()
 
-# Iterate
+# Find the first mesh object, which will be your imported GLTF, to set as active
 for obj in bpy.data.objects:
-    # Check if the object is a fractured piece
+    if obj.type == "MESH":
+        bpy.context.view_layer.objects.active = obj  # Set the mesh object as active
+        break
+
+# Make sure there is an active object before proceeding
+if bpy.context.active_object is not None:
+    original_obj_name = bpy.context.active_object.name
+    # ... [rest of the script where you use original_obj_name]
+else:
+    raise Exception(
+        "No active mesh object found. Please ensure the GLTF file was imported correctly."
+    )
+
+
+# Apply rigid body to fractured pieces
+for obj in bpy.data.objects:
+    # The fractured pieces should have the original object's name as part of their new name
     if original_obj_name in obj.name:
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = obj
-        bpy.ops.rigidbody.object_add()
-        obj.rigid_body.type = "ACTIVE"
+        bpy.ops.object.select_all(action="DESELECT")  # Deselect all objects
+        obj.select_set(True)  # Select the current object
+        bpy.context.view_layer.objects.active = obj  # Set as the active object
+        bpy.ops.rigidbody.object_add()  # Add active rigid body
+        obj.rigid_body.type = "ACTIVE"  # Set rigid body to active
+        obj.rigid_body.collision_shape = "MESH"  # Set collision shape to MESH
+
 
 # Add a plane at the center
 bpy.ops.mesh.primitive_plane_add(
@@ -72,7 +94,7 @@ bpy.ops.mesh.primitive_plane_add(
 
 # Scale up the plane
 plane = bpy.context.active_object
-plane.scale = (10, 10, 10)
+plane.scale = (5, 5, 5)
 
 # Set plane as passive rigid body
 bpy.ops.rigidbody.object_add()
