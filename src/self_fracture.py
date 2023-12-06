@@ -1,6 +1,5 @@
 """Example Python headless file"""
 import os
-import subprocess
 from datetime import datetime
 import bpy
 
@@ -127,6 +126,43 @@ file_path = os.path.join(
 # Save the file
 bpy.ops.wm.save_as_mainfile(filepath=file_path)
 
-# Open the saved file in Blender (optional)
-blender_path = "blender"  # or the full path to the blender executable
-subprocess.Popen([blender_path, file_path])
+# ? Open the saved file in Blender (optional)
+# ! Don't forget to import subprocess at the top of the file
+# blender_path = "blender"  # or the full path to the blender executable
+# subprocess.Popen([blender_path, file_path])
+
+# Remove the plane
+bpy.data.objects.remove(plane, do_unlink=True)
+
+# Get the directory where the blend file is located
+blend_file_directory = os.path.dirname(bpy.data.filepath)
+
+# If the script is running headless, there may not be a 'bpy.data.filepath'
+# If that's the case, you can set a default directory where the script is located
+if not blend_file_directory:
+    blend_file_directory = os.path.dirname(os.path.realpath(__file__))
+
+# Ensure the 'dist' directory exists
+dist_directory = os.path.join(blend_file_directory, "dist")
+os.makedirs(dist_directory, exist_ok=True)
+
+# Get current date and time for the file name
+current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+# Define the GLB export path with the current date and time
+glb_export_path = os.path.join(
+    dist_directory, f"animated_fracture_{current_datetime}.glb"
+)
+
+# Export to GLB with animations
+bpy.ops.export_scene.gltf(
+    filepath=glb_export_path,
+    export_format="GLB",
+    use_selection=False,  # Export all objects in the scene
+    export_apply=True,  # Apply modifiers and other settings
+    export_animations=True,  # Include animations
+    export_frame_range=True,  # Use the current frame range
+    export_frame_step=1,  # Export all frames
+)
+
+print(f"Exported GLB file to {glb_export_path}")
