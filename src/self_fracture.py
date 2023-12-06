@@ -1,6 +1,9 @@
 """Example Python headless file"""
 import os
+import subprocess
+from datetime import datetime
 import bpy
+
 
 # Create an empty Blender file
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -91,6 +94,17 @@ for frame in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end + 
             obj.keyframe_insert(data_path="rotation_euler")
             obj.keyframe_insert(data_path="scale")
 
+# Get current date and time
+current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+# Define the file path with the current date and time appended
+file_path = os.path.join(
+    os.path.dirname(bpy.data.filepath), f"dist/example_{current_datetime}.blend"
+)
+
 # Save the file
-file_path = os.path.join(os.path.dirname(bpy.data.filepath), "dist/example.blend")
 bpy.ops.wm.save_as_mainfile(filepath=file_path)
+
+# Open the saved file in Blender (optional)
+blender_path = "blender"  # or the full path to the blender executable
+subprocess.Popen([blender_path, file_path])
