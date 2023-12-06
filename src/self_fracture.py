@@ -1,19 +1,35 @@
 """Example Python headless file"""
 import os
+from datetime import datetime
 import bpy
+
 
 # Create an empty Blender file
 bpy.ops.wm.read_factory_settings(use_empty=True)
 
-# Create a red sphere in the center of the scene
-bpy.ops.mesh.primitive_uv_sphere_add(
-    radius=1, enter_editmode=False, align="WORLD", location=(0, 0, 0)
-)
 
-# Set the sphere's material to red
-material = bpy.data.materials.new(name="RedMaterial")
-material.diffuse_color = (1, 0, 0, 1)  # Red color
-bpy.context.object.data.materials.append(material)
+# Load a GLTF file
+def load_gltf(file_path):
+    bpy.ops.import_scene.gltf(filepath=file_path)
+
+
+gltf_file_path = "./src/scene.gltf"
+load_gltf(gltf_file_path)
+
+imported_object = None
+for obj in bpy.data.objects:
+    if obj.type == "MESH":
+        imported_object = obj
+        break
+
+if not imported_object:
+    raise Exception("No imported mesh found")
+
+# Move the object up
+imported_object.location.z += 2.0
+
+# Apply the scale
+bpy.ops.object.transform_apply(scale=True)
 
 # Ensure the Cell Fracture addon is enabled
 bpy.ops.preferences.addon_enable(module="object_fracture_cell")
@@ -42,14 +58,33 @@ for obj in bpy.data.objects:
     bpy.data.objects[original_obj_name].select_set(True)
     bpy.ops.object.delete()
 
-# Iterate
+# Find the first mesh object, which will be your imported GLTF, to set as active
 for obj in bpy.data.objects:
-    # Check if the object is a fractured piece
+    if obj.type == "MESH":
+        bpy.context.view_layer.objects.active = obj  # Set the mesh object as active
+        break
+
+# Make sure there is an active object before proceeding
+if bpy.context.active_object is not None:
+    original_obj_name = bpy.context.active_object.name
+    # ... [rest of the script where you use original_obj_name]
+else:
+    raise Exception(
+        "No active mesh object found. Please ensure the GLTF file was imported correctly."
+    )
+
+
+# Apply rigid body to fractured pieces
+for obj in bpy.data.objects:
+    # The fractured pieces should have the original object's name as part of their new name
     if original_obj_name in obj.name:
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = obj
-        bpy.ops.rigidbody.object_add()
-        obj.rigid_body.type = "ACTIVE"
+        bpy.ops.object.select_all(action="DESELECT")  # Deselect all objects
+        obj.select_set(True)  # Select the current object
+        bpy.context.view_layer.objects.active = obj  # Set as the active object
+        bpy.ops.rigidbody.object_add()  # Add active rigid body
+        obj.rigid_body.type = "ACTIVE"  # Set rigid body to active
+        obj.rigid_body.collision_shape = "MESH"  # Set collision shape to MESH
+
 
 # Add a plane at the center
 bpy.ops.mesh.primitive_plane_add(
@@ -58,7 +93,7 @@ bpy.ops.mesh.primitive_plane_add(
 
 # Scale up the plane
 plane = bpy.context.active_object
-plane.scale = (10, 10, 10)
+plane.scale = (5, 5, 5)
 
 # Set plane as passive rigid body
 bpy.ops.rigidbody.object_add()
@@ -80,6 +115,54 @@ for frame in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end + 
             obj.keyframe_insert(data_path="rotation_euler")
             obj.keyframe_insert(data_path="scale")
 
+# Get current date and time
+current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+# Define the file path with the current date and time appended
+file_path = os.path.join(
+    os.path.dirname(bpy.data.filepath), f"dist/example_{current_datetime}.blend"
+)
+
 # Save the file
-file_path = os.path.join(os.path.dirname(bpy.data.filepath), "dist/example.blend")
 bpy.ops.wm.save_as_mainfile(filepath=file_path)
+
+# ? Open the saved file in Blender (optional)
+# ! Don't forget to import subprocess at the top of the file
+# blender_path = "blender"  # or the full path to the blender executable
+# subprocess.Popen([blender_path, file_path])
+
+# Remove the plane
+bpy.data.objects.remove(plane, do_unlink=True)
+
+# Get the directory where the blend file is located
+blend_file_directory = os.path.dirname(bpy.data.filepath)
+
+# If the script is running headless, there may not be a 'bpy.data.filepath'
+# If that's the case, you can set a default directory where the script is located
+if not blend_file_directory:
+    blend_file_directory = os.path.dirname(os.path.realpath(__file__))
+
+# Ensure the 'dist' directory exists
+dist_directory = os.path.join(blend_file_directory, "dist")
+os.makedirs(dist_directory, exist_ok=True)
+
+# Get current date and time for the file name
+current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+# Define the GLB export path with the current date and time
+glb_export_path = os.path.join(
+    dist_directory, f"animated_fracture_{current_datetime}.glb"
+)
+
+# Export to GLB with animations
+bpy.ops.export_scene.gltf(
+    filepath=glb_export_path,
+    export_format="GLB",
+    use_selection=False,  # Export all objects in the scene
+    export_apply=True,  # Apply modifiers and other settings
+    export_animations=True,  # Include animations
+    export_frame_range=True,  # Use the current frame range
+    export_frame_step=1,  # Export all frames
+)
+
+print(f"Exported GLB file to {glb_export_path}")
