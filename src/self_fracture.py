@@ -8,25 +8,26 @@ import bpy
 bpy.ops.wm.read_factory_settings(use_empty=True)
 
 
-# Load a GLTF file
-def load_gltf(file_path):
-    bpy.ops.import_scene.gltf(filepath=file_path)
+def load_gltf(gltf_file_path):
+    """Load a GLTF file"""
+    bpy.ops.import_scene.gltf(filepath=gltf_file_path)
 
 
-gltf_file_path = "./src/scene.gltf"
-load_gltf(gltf_file_path)
+GLTF_FILE_PATH = "./src/scene.gltf"
+load_gltf(GLTF_FILE_PATH)
 
-imported_object = None
+IMPORTED_OBJECT = None
 for obj in bpy.data.objects:
     if obj.type == "MESH":
-        imported_object = obj
+        IMPORTED_OBJECT = obj
         break
 
-if not imported_object:
-    raise Exception("No imported mesh found")
+if not IMPORTED_OBJECT:
+    raise ValueError("No imported mesh found")
 
 # Move the object up
-imported_object.location.z += 2.0
+x, y, z = IMPORTED_OBJECT.location
+IMPORTED_OBJECT.location = (x, y, z + 2.0)
 
 # Apply the scale
 bpy.ops.object.transform_apply(scale=True)
@@ -40,13 +41,15 @@ bpy.ops.object.select_all(action="DESELECT")
 # Process each object in the scene
 for obj in bpy.data.objects:
     obj.select_set(True)
-    obj.location.z += 3.0
+    x, y, z = obj.location
+    obj.location = (x, y, z + 3.0)
 
     # Make the object the active object
     bpy.context.view_layer.objects.active = obj
 
     # Apply Cell Fracture
-    bpy.ops.object.add_fracture_cell_objects()
+    # pylint: disable=no-member
+    bpy.ops.object.add_fracture_cell_objects()  # type: ignore
 
     # Store the name of the original object
     original_obj_name = obj.name
@@ -64,12 +67,10 @@ for obj in bpy.data.objects:
         bpy.context.view_layer.objects.active = obj  # Set the mesh object as active
         break
 
-# Make sure there is an active object before proceeding
 if bpy.context.active_object is not None:
     original_obj_name = bpy.context.active_object.name
-    # ... [rest of the script where you use original_obj_name]
 else:
-    raise Exception(
+    raise ValueError(
         "No active mesh object found. Please ensure the GLTF file was imported correctly."
     )
 
@@ -126,19 +127,13 @@ file_path = os.path.join(
 # Save the file
 bpy.ops.wm.save_as_mainfile(filepath=file_path)
 
-# ? Open the saved file in Blender (optional)
-# ! Don't forget to import subprocess at the top of the file
-# blender_path = "blender"  # or the full path to the blender executable
-# subprocess.Popen([blender_path, file_path])
-
 # Remove the plane
 bpy.data.objects.remove(plane, do_unlink=True)
 
 # Get the directory where the blend file is located
 blend_file_directory = os.path.dirname(bpy.data.filepath)
 
-# If the script is running headless, there may not be a 'bpy.data.filepath'
-# If that's the case, you can set a default directory where the script is located
+# If the blend file is not saved, use the current directory
 if not blend_file_directory:
     blend_file_directory = os.path.dirname(os.path.realpath(__file__))
 
