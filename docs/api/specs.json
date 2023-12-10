@@ -1,0 +1,23 @@
+{
+  "v": 1,
+  "name": "Headless Blender",
+  "folders": [],
+  "requests": [
+    {
+      "v": "1",
+      "name": "Upload GLTF",
+      "endpoint": "http://127.0.0.1:8000/upload-gltf/",
+      "method": "POST",
+      "headers": [],
+      "params": [],
+      "body": {
+        "contentType": "multipart/form-data",
+        "body": [
+          { "key": "zip_file", "value": [{}], "active": true, "isFile": true }
+        ]
+      },
+      "preRequestScript": "",
+      "testScript": ""
+    }
+  ]
+}
