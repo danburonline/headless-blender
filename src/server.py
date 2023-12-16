@@ -1,5 +1,6 @@
 """Web server for uploading GLTF files and processing them with Blender."""
 from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import FileResponse
 import shutil
 import os
 
@@ -24,6 +25,8 @@ async def upload_gltf(zip_file: UploadFile = File(...)):
 
     # Assume the GLTF file is named 'scene.gltf'
     gltf_file_path = os.path.join(temp_dir, "scene.gltf")
+    # Process the GLTF file with your Blender function
+    glb_file_path = process_gltf(gltf_file_path)
 
     # Process the GLTF file with your Blender function
     process_gltf(gltf_file_path)
@@ -31,4 +34,8 @@ async def upload_gltf(zip_file: UploadFile = File(...)):
     # Clean up: remove the temporary directory
     shutil.rmtree(temp_dir)
 
-    return {"filename": zip_file.filename}
+    return FileResponse(
+        path=glb_file_path,
+        filename=os.path.basename(glb_file_path),
+        media_type="model/gltf-binary",
+    )

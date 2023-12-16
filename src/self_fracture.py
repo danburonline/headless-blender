@@ -153,3 +153,5 @@ def process_gltf(gltf_file_path):
     )
 
     print(f"Exported GLB file to {glb_export_path}")
+
+    return glb_export_path
