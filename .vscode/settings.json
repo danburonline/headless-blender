@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["editmode", "fastapi", "mainfile", "ptcache", "rigidbody"]
+  "cSpell.words": [
+    "BSDF",
+    "editmode",
+    "fastapi",
+    "mainfile",
+    "ptcache",
+    "rigidbody"
+  ]
 }
