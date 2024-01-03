@@ -10,13 +10,13 @@ readme = "README.md"
 python = "==3.10.*"
 bpy = "^4.0.0"
 fastapi = "^0.104.1"
-fake-bpy-module = "^20231201"
 uvicorn = "^0.24.0.post1"
 python-multipart = "^0.0.6"
 
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.0.2"
+fake-bpy-module = "^20231220"
 
 [build-system]
 requires = ["poetry-core"]

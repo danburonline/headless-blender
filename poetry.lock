@@ -361,13 +361,13 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "fake-bpy-module"
-version = "20231201"
+version = "20231220"
 description = "Collection of the fake Blender Python API module for the code completion."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "fake-bpy-module-20231201.tar.gz", hash = "sha256:f2b09ea727236487cee644637fe454379ea5643c33d28ce8aabe285e42241459"},
-    {file = "fake_bpy_module-20231201-py3-none-any.whl", hash = "sha256:186615310d4923b49ec6feb88504e38f71a0138947ee3010f097887b87e831b3"},
+    {file = "fake-bpy-module-20231220.tar.gz", hash = "sha256:dbba0032bc5d222dc8750824d76de1a45ee6c0c97a756bef5377add372f497c6"},
+    {file = "fake_bpy_module-20231220-py3-none-any.whl", hash = "sha256:af37ac07f38d51752e3edb161377552f7c461ecb5238fdca4e0bc597d67f938f"},
 ]
 
 [[package]]
@@ -867,4 +867,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "==3.10.*"
-content-hash = "a107040a4ee8a846116ec0a02e5cd28c5ef35f4f56c42fea138da7df8ed0d248"
+content-hash = "9bb58785369fb71ebfbabc20845efe055efec5c672b826d9234108c240880394"
