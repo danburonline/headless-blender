@@ -42,7 +42,6 @@ def process_gltf(gltf_file_path):
         bpy.context.view_layer.objects.active = obj
 
         # Apply Cell Fracture
-        # pylint: disable=no-member
         bpy.ops.object.add_fracture_cell_objects()  # type: ignore
 
         # Store the name of the original object
