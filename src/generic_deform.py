@@ -1,6 +1,7 @@
 import bpy
 import os
 from datetime import datetime
+import bmesh
 
 # Base directory assuming the script is run from the root directory
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -16,8 +17,8 @@ bpy.ops.wm.open_mainfile(filepath=source_blend)
 # Deselect all objects first to ensure a clean slate
 bpy.ops.object.select_all(action="DESELECT")
 
-# Assuming there is only one object and it's the first in the collection
-obj = bpy.context.scene.objects[0]
+# get the first object via bmesh
+obj = bpy.context.active_object
 
 # Select the object and make it the active object
 obj.select_set(True)
@@ -33,15 +34,16 @@ bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_mode(type="VERT")
 bpy.ops.mesh.select_all(action="DESELECT")
 bpy.ops.object.mode_set(mode="OBJECT")
-# obj.data.vertices[0].select = True
-vertex = obj.data.vertices[0]
+# get vertex from bmesh
+bm = bmesh.new()
+bm.from_mesh(obj.data)
+bm.verts.ensure_lookup_table()
+vertex = bm.verts[0]
+
+vertex = obj.data.vertices[0]  # type: ignore
 
 # move vertex to 5,1,1
-vertex.co = (5, 1, 1)
-
-bpy.ops.object.mode_set(mode="EDIT")
-# move the vertex
-
+vertex.co = (10, 1, 1)
 
 # Make sure the destination folder exists
 if not os.path.exists(destination_folder):
