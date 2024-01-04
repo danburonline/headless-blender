@@ -27,14 +27,21 @@ bpy.context.view_layer.objects.active = obj
 bpy.ops.transform.resize(value=(2.76192, 2.76192, 2.76192), orient_type="GLOBAL")
 
 # Switch into edit mode
-bpy.ops.object.editmode_toggle()
+bpy.ops.object.mode_set(mode="OBJECT")
+obj = bpy.context.active_object
+bpy.ops.object.mode_set(mode="EDIT")
+bpy.ops.mesh.select_mode(type="VERT")
+bpy.ops.mesh.select_all(action="DESELECT")
+bpy.ops.object.mode_set(mode="OBJECT")
+# obj.data.vertices[0].select = True
+vertex = obj.data.vertices[0]
 
-# Select a random vertex
-# TODO This doesn't work from here on
-bpy.ops.mesh.select_random(ratio=0.5, seed=0, action="SELECT")
+# move vertex to 5,1,1
+vertex.co = (5, 1, 1)
 
-# Move this vertex randomly in 3d space
-bpy.ops.transform.translate(value=(0.0, 0.0, 0.0), orient_type="GLOBAL")
+bpy.ops.object.mode_set(mode="EDIT")
+# move the vertex
+
 
 # Make sure the destination folder exists
 if not os.path.exists(destination_folder):
