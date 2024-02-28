@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 import shutil
 import os
 
-from src.self_fracture import process_gltf
+from headless_blender.self_fracture import process_gltf
 from zipfile import ZipFile
 
 app = FastAPI()
