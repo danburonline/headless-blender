@@ -3,8 +3,10 @@
     "BSDF",
     "editmode",
     "fastapi",
+    "Hoppscotch",
     "mainfile",
     "ptcache",
-    "rigidbody"
+    "rigidbody",
+    "uvicorn"
   ]
 }

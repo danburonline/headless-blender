@@ -4,6 +4,7 @@ This repository is an experimental side project to determine the feasibility of 
 
 ## Quick Start
 
-- Open the project via the Poetry shell: `poetry shell`
-- Install the project dependencies: `poetry install`
-- Run the project: `blender -b -P src/self_fracture.py`
+1. Open the project via the Poetry shell: `poetry shell`
+2. Install the project dependencies: `poetry install`
+3. Run the example server: `uvicorn headless_blender.server:app --reload`
+4. Import the [API specs](./docs/api/specs.json) into Hoppscotch and use the API accordingly
