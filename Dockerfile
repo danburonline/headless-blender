@@ -1,4 +1,4 @@
-# Use an official Python runtime as a parent image
+# Use the Python base image
 FROM python:3.10-slim
 
 # Set environment variables
@@ -32,7 +32,7 @@ RUN mkdir /usr/local/blender && \
 # Add Blender to the PATH
 ENV PATH="/usr/local/blender:${PATH}"
 
-# Install Poetry version 1.7.1
+# Install Poetry for managing dependencies
 RUN pip install poetry==1.7.1
 
 # Configure Poetry: Do not create a virtual environment
@@ -47,8 +47,8 @@ RUN poetry install --no-root --only main
 # Copy the rest of your project files into the container
 COPY . /app
 
-# Expose port to access the server
+# Expose port to access the FastAPI server
 EXPOSE 8000
 
-# Run Uvicorn with live auto-reload
-CMD ["uvicorn", "headless_blender.server:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Run the server via Uvicorn
+CMD ["uvicorn", "headless_blender.server:app", "--host", "0.0.0.0", "--port", "8000"]
