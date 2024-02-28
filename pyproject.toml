@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "headless-blender"
+name = "headless_blender"
 version = "0.0.1"
 description = "Trying to run physics simulations via Blender by not opening it."
 authors = ["Daniel Burger <public@danielburger.online>"]
