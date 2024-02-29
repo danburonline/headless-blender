@@ -40,7 +40,6 @@ async def upload_gltf(zip_file: UploadFile = File(...)):
         check=True,
     )
 
-    # Define the path to the output file (you'll need to ensure your Blender script outputs to a known location)
     glb_file_path = (
         "/files/glb/file.glb"  # Update this path based on your Blender script's output
     )
