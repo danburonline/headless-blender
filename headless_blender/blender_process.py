@@ -1,7 +1,7 @@
 import bpy
 import os
 import sys
-import datetime
+from datetime import datetime
 
 # The last argument in sys.argv will be the GLTF file path
 gltf_file_path = sys.argv[-1]
