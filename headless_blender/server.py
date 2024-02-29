@@ -48,11 +48,13 @@ async def upload_gltf(zip_file: UploadFile = File(...)):
         check=True,
     )
 
-    # Find the most recently created GLB file
-    dist_directory = "/app/dist"
+    # Find the most recently created GLB file in the correct directory
+    dist_directory = (
+        "/app/headless_blender/dist"  # Updated to match Blender script output
+    )
     glb_file_path = find_latest_glb_file(dist_directory)
 
-    if not glb_file_path:
+    if not glb_file_path or not os.path.exists(glb_file_path):
         return {"error": "GLB file not found."}
 
     # Clean up: remove the temporary directory
