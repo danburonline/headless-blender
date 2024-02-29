@@ -7,6 +7,7 @@ import subprocess
 
 app = FastAPI()
 
+
 @app.post("/upload-gltf/")
 async def upload_gltf(zip_file: UploadFile = File(...)):
     temp_dir = f"temp/{zip_file.filename}-unzipped"
@@ -24,13 +25,25 @@ async def upload_gltf(zip_file: UploadFile = File(...)):
 
     # Define the path to the Blender executable and your script
     blender_executable_path = "/usr/local/blender/blender"
-    blender_script_path = "./blender_process.py"
+    blender_script_path = "./headless_blender/blender_process.py"
 
     # Call Blender in headless mode to process the GLTF file
-    subprocess.run([blender_executable_path, "--background", "--python", blender_script_path, "--", gltf_file_path], check=True)
+    subprocess.run(
+        [
+            blender_executable_path,
+            "--background",
+            "--python",
+            blender_script_path,
+            "--",
+            gltf_file_path,
+        ],
+        check=True,
+    )
 
     # Define the path to the output file (you'll need to ensure your Blender script outputs to a known location)
-    glb_file_path = "/files/glb/file.glb"  # Update this path based on your Blender script's output
+    glb_file_path = (
+        "/files/glb/file.glb"  # Update this path based on your Blender script's output
+    )
 
     # Clean up: remove the temporary directory
     shutil.rmtree(temp_dir)

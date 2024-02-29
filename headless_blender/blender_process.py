@@ -1,4 +1,3 @@
-# blender_process.py
 import bpy
 import os
 import sys

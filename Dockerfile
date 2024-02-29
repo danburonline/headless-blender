@@ -9,6 +9,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Install wget, xz-utils, and necessary libraries for Blender
+# Install necessary libraries for Blender, wget, xz-utils, and libSM
 RUN apt-get update && apt-get install -y \
   wget \
   xz-utils \
@@ -17,6 +18,8 @@ RUN apt-get update && apt-get install -y \
   libxfixes3 \
   libgl1 \
   libdbus-1-3 \
+  libxkbcommon0 \
+  libsm6 \
   && rm -rf /var/lib/apt/lists/*
 
 # Download and install Blender
