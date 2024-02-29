@@ -1,5 +1,5 @@
 # Use the Python base image
-FROM python:3.10-slim
+FROM --platform=linux/amd64 python:3.10-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -8,26 +8,23 @@ ENV PYTHONUNBUFFERED 1
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
+# Install wget, xz-utils, and necessary libraries for Blender
+RUN apt-get update && apt-get install -y \
   wget \
   xz-utils \
-  libjpeg-dev \
-  libopenexr-dev \
-  libpng-dev \
-  libtiff-dev \
-  libxxf86vm1 \
+  libxi6 \
+  libxrender1 \
+  libxfixes3 \
+  libgl1 \
   libdbus-1-3 \
-  libblosc1 \
-  && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Blender
+# Download and install Blender
 RUN mkdir /usr/local/blender && \
   wget -O blender.tar.xz https://download.blender.org/release/Blender4.0/blender-4.0.0-linux-x64.tar.xz && \
   tar -xf blender.tar.xz -C /usr/local/blender --strip-components=1 && \
   rm blender.tar.xz
+
 
 # Add Blender to the PATH
 ENV PATH="/usr/local/blender:${PATH}"
