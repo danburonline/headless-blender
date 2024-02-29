@@ -4,8 +4,16 @@ import shutil
 import os
 from zipfile import ZipFile
 import subprocess
+from pathlib import Path
 
 app = FastAPI()
+
+
+def find_latest_glb_file(directory: str) -> str:
+    """Find the most recently created .glb file in the specified directory."""
+    list_of_files = Path(directory).glob("*.glb")
+    latest_file = max(list_of_files, key=os.path.getctime, default=None)
+    return str(latest_file) if latest_file else None
 
 
 @app.post("/upload-gltf/")
@@ -40,9 +48,12 @@ async def upload_gltf(zip_file: UploadFile = File(...)):
         check=True,
     )
 
-    glb_file_path = (
-        "/files/glb/file.glb"  # Update this path based on your Blender script's output
-    )
+    # Find the most recently created GLB file
+    dist_directory = "/app/dist"
+    glb_file_path = find_latest_glb_file(dist_directory)
+
+    if not glb_file_path:
+        return {"error": "GLB file not found."}
 
     # Clean up: remove the temporary directory
     shutil.rmtree(temp_dir)

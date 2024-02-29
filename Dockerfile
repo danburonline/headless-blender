@@ -47,6 +47,8 @@ RUN poetry install --no-root --only main
 # Copy the rest of your project files into the container
 COPY . /app
 
+RUN mkdir /app/dist
+
 # Expose port to access the FastAPI server
 EXPOSE 8000
 

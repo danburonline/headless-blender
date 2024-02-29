@@ -113,12 +113,13 @@ def process_gltf(gltf_file_path):
     # Get current date and time
     current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    # Define the file path with the current date and time appended
-    file_path = os.path.join(os.path.dirname(bpy.data.filepath), "dist")
-    os.makedirs(file_path, exist_ok=True)
+    # FIXME Also save the Blender files
+    # # Define the file path with the current date and time appended
+    # file_path = os.path.join(os.path.dirname(bpy.data.filepath), "dist")
+    # os.makedirs(file_path, exist_ok=True)
 
-    # Save the file
-    bpy.ops.wm.save_as_mainfile(filepath=file_path)
+    # # Save the file
+    # bpy.ops.wm.save_as_mainfile(filepath=file_path, check_existing=False)
 
     # Remove the plane
     bpy.data.objects.remove(plane, do_unlink=True)
