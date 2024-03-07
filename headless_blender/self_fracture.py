@@ -1,4 +1,3 @@
-"""Example Python headless file"""
 import os
 from datetime import datetime
 import bpy

@@ -34,15 +34,14 @@ bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_mode(type="VERT")
 bpy.ops.mesh.select_all(action="DESELECT")
 bpy.ops.object.mode_set(mode="OBJECT")
-# get vertex from bmesh
 bm = bmesh.new()
 bm.from_mesh(obj.data)
 bm.verts.ensure_lookup_table()
 vertex = bm.verts[0]
 
-vertex = obj.data.vertices[0]  # type: ignore
+vertex = obj.data.vertices[0]
 
-# move vertex to 5,1,1
+# Move vertex to 5,1,1
 vertex.co = (10, 1, 1)
 
 # Make sure the destination folder exists
